@@ -1,0 +1,29 @@
+{
+  "name": "typeormgen",
+  "version": "0.1.0",
+  "description": "Generate typeorm models from your database tables",
+  "main": "index.js",
+  "bin": {
+    "typeormgen": "index.js",
+    "typeg": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wymsee/typeormgen.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wymsee/typeormgen/issues"
+  },
+  "homepage": "https://github.com/wymsee/typeormgen#readme",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "knex": "^0.14.4",
+    "mysql": "^2.15.0",
+    "nconf": "^0.10.0"
+  }
+}

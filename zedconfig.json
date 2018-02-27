@@ -1,0 +1,11 @@
+{
+    "preferences": {
+        "wordWrap": true,
+        "useSoftTabs": true,
+        "tabSize": 4,
+        "trimWhitespaceOnSave": true,
+        "gotoExclude": [
+            "/node_modules"
+        ]
+    }
+}
