@@ -4,7 +4,15 @@ const path = require('path');
 module.exports = function(base, out) {
     const content = fs.readFileSync(base, { encoding: 'utf-8' });
 
-    const relative = path.relative(out, base);
+    let relative = path.relative(out, base);
+    if (/\.\.\/\.\.\//.test(relative)) {
+        relative = relative.slice(3);
+    } else {
+        relative = relative.slice(1);
+    }
+
+    const index = relative.search(/\.(j|t)sx?/);
+    relative = relative.slice(0, index - relative.length);
 
     const matches = /class\s+(\w+)(\s+extends\s+\w+)?\s+{/.exec(content);
 
