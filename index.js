@@ -104,11 +104,7 @@ const configFile = nconf.get('configFile');
 if (configFile) {
     nconf.file(configFile);
 } else {
-    nconf.file({
-        file: 'typeormgen.json',
-        dir: __dirname,
-        search: true
-    });
+    nconf.file(path.resolve(__dirname, '..', '..', 'typeormgen.json'));
 }
 
 nconf.defaults({
