@@ -8,6 +8,10 @@ const yargs = require('yargs');
 const writeModel = require('./write-model');
 
 nconf.argv(yargs.options({
+    base: {
+        alias: 'b',
+        describe: 'Path to a file containing a class for the model to exend.  The class should be the default export'
+    },
     host: {
         alias: 'h',
         describe: 'Database host url'
@@ -41,6 +45,15 @@ nconf.argv(yargs.options({
     model: {
         alias: 'm',
         describe: 'Model class name.  Will default to converting snake case table name to PascalCase'
+    },
+    moment: {
+        describe: 'Use Date | Moment for the type for dates instead of just Date',
+        boolean: true
+    },
+    rules: {
+        alias: 'r',
+        describe: 'Output a static rules function that returns basic joi validation rules',
+        boolean: true
     },
     out: {
         alias: 'o',
@@ -126,7 +139,7 @@ knex.raw(`DESCRIBE ${nconf.get('table')}`).then(([rows]) => {
     rows.forEach(row => {
         const openIndex = row.Type.indexOf('(');
         info[row.Field] = {
-            type: row.Type.slice(0, openIndex - row.Type.length),
+            type: openIndex > -1 ? row.Type.slice(0, openIndex - row.Type.length): row.Type,
             length: parseInt(row.Type.slice(openIndex + 1, -1), 10),
             nullable: row.Null === 'YES'
         };
@@ -134,6 +147,11 @@ knex.raw(`DESCRIBE ${nconf.get('table')}`).then(([rows]) => {
             info[row.Field].length += 1;
         }
     });
-    writeModel(info, nconf);
+    try {
+        writeModel(info, nconf);
+    } catch (err) {
+        console.error(err);
+        process.exit(1);
+    }
     process.exit();
 });

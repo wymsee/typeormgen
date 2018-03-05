@@ -6,7 +6,7 @@ ${tab}${tab}return {
 `;
 
     Object.keys(info).forEach(col => {
-        content += `${tab.repeat(3)}${col}: ${getJoiRule(info)}
+        content += `${tab.repeat(3)}${col}: ${getJoiRule(info[col])}
 `;
     });
 
@@ -15,9 +15,10 @@ ${tab}}
 
 `;
     return content;
-}
+};
 
 function getJoiRule(info) {
+    console.log(info);
     let rule;
     if (numberTypes.indexOf(info.type) > -1) {
         rule = 'joi.number()';
@@ -28,7 +29,7 @@ function getJoiRule(info) {
         rule = 'joi.date()';
     } else {
         rule = 'joi.string()';
-        if (info.length) {
+        if (info.length && !Number.isNaN(info.length)) {
             rule += `.max(${info.length})`;
         }
     }
