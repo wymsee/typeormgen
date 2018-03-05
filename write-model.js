@@ -1,4 +1,4 @@
-const fs = require('fs');
+const fs = require('fs-extra');
 const { numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
 const writeRules = require('./write-rules');
@@ -36,7 +36,7 @@ module.exports = function(info, nconf) {
 
     content += writeFoot(model, tab);
 
-    return fs.writeFileSync(out, content);
+    return fs.outputFileSync(out, content);
 };
 
 function writeHead(table, name, baseInfo, hasDate, rules) {
