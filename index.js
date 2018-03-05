@@ -48,12 +48,14 @@ nconf.argv(yargs.options({
     },
     moment: {
         describe: 'Use Date | Moment for the type for dates instead of just Date',
-        boolean: true
+        boolean: true,
+        default: undefined
     },
     rules: {
         alias: 'r',
         describe: 'Output a static rules function that returns basic joi validation rules',
-        boolean: true
+        boolean: true,
+        default: undefined
     },
     out: {
         alias: 'o',
@@ -62,7 +64,8 @@ nconf.argv(yargs.options({
     },
     tabs: {
         describe: 'Use tabs instead of spaces',
-        boolean: true
+        boolean: true,
+        default: undefined
     },
     tabSize: {
         describe: 'Number of spaces to indent lines'
@@ -104,7 +107,11 @@ const configFile = nconf.get('configFile');
 if (configFile) {
     nconf.file(configFile);
 } else {
-    nconf.file(path.resolve(__dirname, '..', '..', 'typeormgen.json'));
+    nconf.file({
+        file: 'typeormgen.json',
+        dir: __dirname,
+        search: true
+    });
 }
 
 nconf.defaults({

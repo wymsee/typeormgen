@@ -18,7 +18,6 @@ ${tab}}
 };
 
 function getJoiRule(info) {
-    console.log(info);
     let rule;
     if (numberTypes.indexOf(info.type) > -1) {
         rule = 'joi.number()';
