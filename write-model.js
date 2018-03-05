@@ -53,7 +53,7 @@ function writeHead(table, name, baseInfo, hasDate, rules) {
     }
 
     if (baseInfo) {
-        content += `import ${baseInfo.name} from '${baseInfo.path}'
+        content += `import ${baseInfo.name} from '${baseInfo.path}';
 `;
     }
 
@@ -101,6 +101,5 @@ function writeFoot(model, tab) {
 ${tab}${tab}super(props);
 ${tab}}
 }
-
 `;
 }
