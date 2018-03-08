@@ -70,6 +70,7 @@ function writeColumn(col, info, tab, columns, moment) {
     let decorator = '@Column';
     if (columns.primaryGenerated === col) {
         decorator = '@PrimaryGeneratedColumn';
+        options = '';
     } else if (columns.primaryGeneratedUUID === col) {
         decorator = `@PrimaryGeneratedColumn`;
         options = `'uuid'`;
