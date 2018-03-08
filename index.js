@@ -26,8 +26,8 @@ const momentTransformer = {
     },
     // called on value before persisting to database
     to: function(value) {
-        if (value) {
-            return value.toDate();
+        if (moment.isMoment(value)) {
+            return value.utc().toISOString();
         }
         return value;
     }
