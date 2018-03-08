@@ -1,6 +1,6 @@
 {
   "name": "typeormgen",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "Generate typeorm models from your database tables",
   "main": "index.js",
   "bin": {
