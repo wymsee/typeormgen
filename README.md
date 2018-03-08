@@ -5,26 +5,36 @@ Generate typeorm models from your database tables
 
 ```
 Options:
---base, -b      Path to a file containing a class for the model to exend.  The
-                class should be the default export
---host, -h      Database host url
---port, -p      Port the database is exposed on
---user, -u      Database username
---password      Database password
---configFile    Path to json config file
---envFile       Path to env file to be parsed by dotenv
---database, -d  Database name
---table, -t     Table name to generate a model for                  [required]
---model, -m     Model class name.  Will default to converting snake case table
-                name to PascalCase
---moment        Use Date | Moment for the type for dates instead of just Date
-                                                                     [boolean]
---rules, -r     Output a static rules function that returns basic joi
-                validation rules                                     [boolean]
---out, -o       Path to where model file will be written            [required]
---tabs          Use tabs instead of spaces                           [boolean]
---tabSize       Number of spaces to indent lines
---help          Show help                                            [boolean]
+--base, -b                    Path to a file containing a class for the model
+                              to exend.  The class should be the default
+                              export
+--host, -h                    Database host url
+--port, -p                    Port the database is exposed on
+--user, -u                    Database username
+--password                    Database password
+--configFile                  Path to json config file
+--envFile                     Path to env file to be parsed by dotenv
+--database, -d                Database name
+--table, -t                   Table name to generate a model for    [required]
+--model, -m                   Model class name.  Will default to converting
+                              snake case table name to PascalCase
+--moment                      Use Date | Moment for the type for dates instead
+                              of just Date                           [boolean]
+--rules, -r                   Output a static rules function that returns
+                              basic joi validation rules             [boolean]
+--out, -o                     Path to where model file will be written
+                                                                    [required]
+--tabs                        Use tabs instead of spaces             [boolean]
+--tabSize                     Number of spaces to indent lines
+--primaryGeneratedColumn      Column to decorate with
+                              @PrimaryGeneratedColumn()
+--primaryGeneratedColumnUUID  Column to decorate with
+                              @PrimaryGeneratedColumn('uuid')
+--primaryColumn               Column to decorate with @PrimaryColumn()
+--createDateColumn            Column to decorate with @CreateDateColumn()
+--updateDateColumn            Column to decorate with @UpdateDateColumn()
+--versionColumn               Column to decorate with @VersionColumn()
+--help                        Show help                              [boolean]
 ```
 
 ### Config File Example
