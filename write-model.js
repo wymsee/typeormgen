@@ -1,7 +1,12 @@
 const fs = require('fs-extra');
 const { numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
+const writeHead = require('./write-head');
 const writeRules = require('./write-rules');
+
+function hasColumn(column, info) {
+    return Object.keys(info).find(col => col === column);
+}
 
 module.exports = function(info, nconf) {
     const base = nconf.get('base');
@@ -12,6 +17,14 @@ module.exports = function(info, nconf) {
     const table = nconf.get('table');
     const tabs = nconf.get('tabs');
     const tabSize = nconf.get('tabSize');
+    const columns = {
+        primaryGenerated: hasColumn(nconf.get('primaryGeneratedColumn'), info),
+        primaryGeneratedUUID: hasColumn(nconf.get('primaryGeneratedColumnUUID'), info),
+        primary: hasColumn(nconf.get('primaryColumn'), info),
+        createDate: hasColumn(nconf.get('createDateColumn'), info),
+        updateDate: hasColumn(nconf.get('updateDateColumn'), info),
+        version: hasColumn(nconf.get('versionColumn'), info)
+    };
 
     const tab = tabs ? '\t' : ' '.repeat(tabSize);
 
@@ -24,10 +37,10 @@ module.exports = function(info, nconf) {
     if (moment) {
         hasDate = Object.keys(info).find(col => dateTypes.indexOf(info[col].type) > -1);
     }
-    let content = writeHead(table, model, baseInfo, hasDate, rules);
+    let content = writeHead(table, model, columns, baseInfo, hasDate, rules);
 
     Object.keys(info).forEach(col => {
-        content += writeColumn(col, info[col], tab, moment);
+        content += writeColumn(col, info[col], tab, columns, moment);
     });
 
     if (nconf.get('rules')) {
@@ -39,58 +52,38 @@ module.exports = function(info, nconf) {
     return fs.outputFileSync(out, content);
 };
 
-function writeHead(table, name, baseInfo, hasDate, rules) {
-    let content = `import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-`;
-    if (rules) {
-        content += `import * as joi from 'joi';
-`;
-    }
+function writeColumn(col, info, tab, columns, moment) {
+    let options = `'${info.type}'`;
 
-    if (hasDate) {
-        content += `import { Moment } from 'moment';
-`;
-    }
-
-    if (baseInfo) {
-        content += `import ${baseInfo.name} from '${baseInfo.path}';
-`;
-    }
-
-    content += `
-@Entity('${table}')
-export default class ${name} `;
-
-    if (baseInfo) {
-        content += `extends ${baseInfo.name} `;
-    }
-
-    content += `{
-`;
-
-    return content;
-}
-
-function writeColumn(col, info, tab, moment) {
     let type = 'string';
     if (numberTypes.indexOf(info.type) > -1) {
         type = 'number';
     } else if (dateTypes.indexOf(info.type) > -1) {
         if (moment) {
-            type = 'Moment | Date';
+            type = 'Moment';
+            options = `{ type: '${info.type}', transformer: momentTransformer }`;
         } else {
             type = 'Date';
         }
     }
 
-    if (type === 'number' && col === 'id') {
-        return `${tab}@PrimaryGeneratedColumn()
-${tab}id: number;
-
-`;
+    let decorator = '@Column';
+    if (columns.primaryGenerated === col) {
+        decorator = '@PrimaryGeneratedColumn';
+    } else if (columns.primaryGeneratedUUID === col) {
+        decorator = `@PrimaryGeneratedColumn`;
+        options = `'uuid'`;
+    } else if (columns.primaryColumn === col) {
+        decorator = '@PrimaryColumn';
+    } else if (columns.createDate === col) {
+        decorator = '@CreateDateColumn';
+    } else if (columns.updateDate === col) {
+        decorator = '@UpdateDateColumn';
+    } else if (columns.version === col) {
+        decorator = '@VersionColumn';
     }
 
-    return `${tab}@Column('${info.type}')
+    return `${tab}${decorator}(${options})
 ${tab}${col}: ${type};
 
 `;
