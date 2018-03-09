@@ -10,7 +10,7 @@ ${tab}${tab}return {
 `;
     });
 
-    content += `${tab.repeat(2)}},
+    content += `${tab.repeat(2)}};
 ${tab}}
 
 `;
@@ -37,5 +37,5 @@ function getJoiRule(info) {
         rule += '.allow(null)';
     }
 
-    return rule += ';';
+    return rule += ',';
 }
