@@ -20,7 +20,7 @@ const momentTransformer = {
     // called on value when fetching from database
     from: function(value) {
         if (value) {
-            return moment(value);
+            return moment.utc(value);
         }
         return value;
     },
