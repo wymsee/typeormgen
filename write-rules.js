@@ -9,7 +9,7 @@ ${tab}${tab}return {
         content += `${tab.repeat(3)}${col}: ${getJoiRule(info[col])}
 `;
     });
-
+    content = content.slice(0, -1);
     content += `${tab.repeat(2)}};
 ${tab}}
 
@@ -37,5 +37,5 @@ function getJoiRule(info) {
         rule += '.allow(null)';
     }
 
-    return rule += ';';
+    return rule += ',';
 }
