@@ -10,7 +10,7 @@ ${tab}${tab}return {
 `;
     });
 
-    content += `${tab.repeat(2)}};
+    content += `${tab.repeat(2)}},
 ${tab}}
 
 `;
