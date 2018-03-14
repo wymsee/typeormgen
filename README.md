@@ -22,6 +22,8 @@ Options:
                               of just Date                           [boolean]
 --rules, -r                   Output a static rules function that returns
                               basic joi validation rules             [boolean]
+--toJSON                      Output a toJSON function that returns the
+                              model's properties
 --out, -o                     Path to where model file will be written
                                                                     [required]
 --tabs                        Use tabs instead of spaces             [boolean]
@@ -47,6 +49,7 @@ Options:
     "password": "password",
     "database": "database",
     "rules": true,
+    "toJSON": true,
     "moment": true,
     "tabSize": 2
 }
