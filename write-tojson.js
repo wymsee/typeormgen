@@ -7,7 +7,7 @@ ${tab.repeat(2)}return {
 	
 	Object.keys(info).forEach(col => {
 		if (forbiddenExportCols.indexOf(col) == -1) {
-		content += `${tab.repeat(3)}${col}: this.${col},
+			content += `${tab.repeat(3)}${col}: this.${col},
 `;
 		}
 	});
@@ -17,6 +17,5 @@ ${tab.repeat(2)}return {
 ${tab}}
 
 `;
-	console.log(content);
 	return content;
 };
