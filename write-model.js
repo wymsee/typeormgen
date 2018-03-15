@@ -3,6 +3,7 @@ const { numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
 const writeHead = require('./write-head');
 const writeRules = require('./write-rules');
+const writeTojson = require('./write-tojson');
 
 function hasColumn(column, info) {
     return Object.keys(info).find(col => col === column);
@@ -45,6 +46,10 @@ module.exports = function(info, nconf) {
 
     if (nconf.get('rules')) {
         content += writeRules(info, tab);
+    }
+
+    if (nconf.get('toJSON')) {
+        content += writeTojson(info, tab);
     }
 
     content += writeFoot(model, tab);

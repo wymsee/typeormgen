@@ -57,6 +57,11 @@ nconf.argv(yargs.options({
         boolean: true,
         default: undefined
     },
+    toJSON: {
+        describe: 'Output a toJSON function that returns the model\'s properties',
+        boolean: true,
+        default: undefined
+    },
     out: {
         alias: 'o',
         describe: 'Path to where model file will be written',
