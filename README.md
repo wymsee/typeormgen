@@ -24,6 +24,8 @@ Options:
                               basic joi validation rules             [boolean]
 --toJSON                      Output a toJSON function that returns the
                               model's properties
+--pluralization               Whether the name of the model should be plural
+                              e.g., table users to model Users or User
 --out, -o                     Path to where model file will be written
                                                                     [required]
 --tabs                        Use tabs instead of spaces             [boolean]
@@ -50,6 +52,7 @@ Options:
     "database": "database",
     "rules": true,
     "toJSON": true,
+    "pluralization": false,
     "moment": true,
     "tabSize": 2
 }

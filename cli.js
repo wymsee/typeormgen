@@ -5,6 +5,7 @@ const Knex = require('knex');
 const nconf = require('nconf');
 const path = require('path');
 const yargs = require('yargs');
+const { pluralizationString } = require('./constants');
 const writeModel = require('./write-model');
 
 nconf.argv(yargs.options({
@@ -146,6 +147,9 @@ if (!nconf.get('model')) {
     let model = table.toLowerCase()
         .replace(/\_\w/g, sub => sub[1].toUpperCase());
     model = model[0].toUpperCase() + model.slice(1);
+    if (!nconf.get('pluralization') && model.slice(-1) === pluralizationString) {
+        model = model.slice(0, -1);
+    }
     nconf.set('model', model);
 }
 
