@@ -1,6 +1,15 @@
 import { Big } from 'big.js';
 import { Moment } from 'moment';
 
+/**
+ * this makes all properties of T optional.
+ * also makes any properties with typeof Moment be Moment | string
+ * any properties with typeof Date be Date | string
+ * any properties with typeof boolean be boolean | 0 | 1
+ * any properties with typeof Big be Big | string
+ * all other properties keep their initial type
+ * See mapped and conditional types
+ */
 type GenPartial<T> = {
     [P in keyof T]?: T[P] extends Moment ? Moment | string :
         T[P] extends Date ? Date | string :
@@ -9,17 +18,23 @@ type GenPartial<T> = {
         T[P];
 }
 
-declare const bigTransformer {
+interface BigTransformer {
     from: (value: string | number) => Big;
     to: (value: Big) => string;
 }
 
-declare const booleanTransformer {
+interface BooleanTransformer {
     from: (value: boolean | 0 | 1) => boolean;
     to: (value: boolean) => 0 | 1;
 }
 
-declare const momentTransformer {
+interface MomentTransformer {
     from: (value: Date | string) => Moment;
     to: (value: Moment) => string;
 }
+
+declare const bigTransformer: BigTransformer;
+
+declare const booleanTransformer: BooleanTransformer;
+
+declare const momentTransformer: MomentTransformer;
