@@ -103,7 +103,6 @@ nconf.argv(yargs.options({
 
 
 if (nconf.get('envFile')) {
-    console.log(nconf.get('envFile'));
     dotenv.config({ path: nconf.get('envFile') });
 } else {
     dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });

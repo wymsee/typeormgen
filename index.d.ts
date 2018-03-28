@@ -19,7 +19,7 @@ type GenPartial<T> = {
 }
 
 interface BigTransformer {
-    from: (value: string | number) => Big;
+    from: (value: Big | string | number) => Big;
     to: (value: Big) => string;
 }
 
@@ -29,7 +29,7 @@ interface BooleanTransformer {
 }
 
 interface MomentTransformer {
-    from: (value: Date | string) => Moment;
+    from: (value: Moment | Date | string) => Moment;
     to: (value: Moment) => string;
 }
 
