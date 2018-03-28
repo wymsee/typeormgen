@@ -68,6 +68,7 @@ function writeColumn(col, info, tab, columns, conf) {
         }
     } else if (conf.get('big') && info.type === 'decimal') {
         type = 'Big';
+        options = `{ type: '${info.type}', transformer: bigTransformer }`;
     }
 
     let decorator = '@Column';

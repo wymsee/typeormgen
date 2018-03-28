@@ -21,7 +21,7 @@ module.exports = function(info, columns, baseInfo, conf) {
 
     let content = '';
     if (hasDecimal) {
-        content += `import { Big } from 'big.js'
+        content += `import { Big } from 'big.js';
 `;
     }
 
