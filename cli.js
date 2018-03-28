@@ -47,8 +47,13 @@ nconf.argv(yargs.options({
         alias: 'm',
         describe: 'Model class name.  Will default to converting snake case table name to PascalCase'
     },
+    big: {
+        describe: 'Use Big with a tranformer for the type for decimal instead of string',
+        boolean: true,
+        default: undefined
+    },
     moment: {
-        describe: 'Use Date | Moment for the type for dates instead of just Date',
+        describe: 'Use Moment with a transformer for the type for dates instead of Date',
         boolean: true,
         default: undefined
     },

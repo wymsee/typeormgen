@@ -5,8 +5,7 @@
         "tabSize": 4,
         "trimWhitespaceOnSave": true,
         "gotoExclude": [
-            "/node_modules",
-            "/node_modules/*"
+            "/node_modules/**"
         ]
     }
 }
