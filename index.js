@@ -16,6 +16,20 @@ const bigTransformer = {
     }
 };
 
+const booleanTransformer = {
+    from: function(value) {
+        if (typeof value !== 'undefined' && value !== null) {
+            return value ? true : false;
+        }
+        return value;
+    },
+    to: function(value) {
+        if (value) {
+            return value ? 1 : 0;
+        }
+    }
+};
+
 const momentTransformer = {
     // called on value when fetching from database
     from: function(value) {
@@ -35,5 +49,6 @@ const momentTransformer = {
 
 module.exports = {
     bigTransformer,
+    booleanTransformer,
     momentTransformer
 };

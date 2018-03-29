@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
-const { numberTypes, dateTypes } = require('./constants');
+const { boolTypes, numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
+const writeFoot = require('./write-foot');
 const writeHead = require('./write-head');
 const writeRules = require('./write-rules');
 const writeTojson = require('./write-tojson');
@@ -11,11 +12,7 @@ function hasColumn(column, info) {
 
 module.exports = function(info, nconf) {
     const base = nconf.get('base');
-    const model = nconf.get('model');
-    const moment = nconf.get('moment');
     const out = nconf.get('out');
-    const rules = nconf.get('rules');
-    const table = nconf.get('table');
     const tabs = nconf.get('tabs');
     const tabSize = nconf.get('tabSize');
     const columns = {
@@ -34,14 +31,10 @@ module.exports = function(info, nconf) {
         baseInfo = readBase(base, out);
     }
 
-    let hasDate = false;
-    if (moment) {
-        hasDate = Object.keys(info).find(col => dateTypes.indexOf(info[col].type) > -1);
-    }
-    let content = writeHead(table, model, columns, baseInfo, hasDate, rules);
+    let content = writeHead(info, columns, baseInfo, nconf);
 
     Object.keys(info).forEach(col => {
-        content += writeColumn(col, info[col], tab, columns, moment);
+        content += writeColumn(col, info[col], tab, columns, nconf);
     });
 
     if (nconf.get('rules')) {
@@ -52,24 +45,30 @@ module.exports = function(info, nconf) {
         content += writeTojson(info, tab);
     }
 
-    content += writeFoot(model, tab);
+    content += writeFoot(info, tab, nconf);
 
     return fs.outputFileSync(out, content);
 };
 
-function writeColumn(col, info, tab, columns, moment) {
+function writeColumn(col, info, tab, columns, conf) {
     let options = `'${info.type}'`;
 
     let type = 'string';
-    if (numberTypes.indexOf(info.type) > -1) {
+    if (boolTypes.indexOf(info.type) > -1 && info.length === 1) {
+        type = 'boolean';
+        options = `{ type: '${info.type}', transformer: booleanTransformer }`;
+    } else if (numberTypes.indexOf(info.type) > -1) {
         type = 'number';
     } else if (dateTypes.indexOf(info.type) > -1) {
-        if (moment) {
+        if (conf.get('moment')) {
             type = 'Moment';
             options = `{ type: '${info.type}', transformer: momentTransformer }`;
         } else {
             type = 'Date';
         }
+    } else if (conf.get('big') && info.type === 'decimal') {
+        type = 'Big';
+        options = `{ type: '${info.type}', transformer: bigTransformer }`;
     }
 
     let decorator = '@Column';
@@ -92,13 +91,5 @@ function writeColumn(col, info, tab, columns, moment) {
     return `${tab}${decorator}(${options})
 ${tab}${col}: ${type};
 
-`;
-}
-
-function writeFoot(model, tab) {
-    return `${tab}constructor(props?: Partial<${model}>) {
-${tab}${tab}super(props);
-${tab}}
-}
 `;
 }

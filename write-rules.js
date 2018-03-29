@@ -1,4 +1,4 @@
-const { numberTypes, dateTypes } = require('./constants');
+const { boolTypes, numberTypes, dateTypes } = require('./constants');
 
 module.exports = function(info, tab) {
     let content = `${tab}static rules() {
@@ -20,7 +20,9 @@ ${tab}}
 
 function getJoiRule(info) {
     let rule;
-    if (numberTypes.indexOf(info.type) > -1) {
+    if (boolTypes.indexOf(info.type) > -1 && info.length === 1) {
+        rule = 'joi.boolean()';
+    } else if (numberTypes.indexOf(info.type) > -1) {
         rule = 'joi.number()';
         if (info.type.indexOf('int') > -1) {
             rule += '.integer()';

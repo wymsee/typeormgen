@@ -1,11 +1,37 @@
-module.exports = function(table, name, columns, baseInfo, hasDate, rules) {
+const { boolTypes, dateTypes } = require('./constants');
+
+module.exports = function(info, columns, baseInfo, conf) {
+    const hasBool = Object.keys(info).find(col => {
+        return (boolTypes.indexOf(info[col].type) > -1 && info[col].length === 1);
+    });
+
+    let hasDate = false;
+    if (conf.get('moment')) {
+        hasDate = Object.keys(info).find(col => {
+            return dateTypes.indexOf(info[col].type) > -1;
+        });
+    }
+
+    let hasDecimal = false;
+    if (conf.get('big')) {
+        hasDecimal = Object.keys(info).find(col => {
+            return info[col].type === 'decimal';
+        });
+    }
+
     let content = '';
-    if (rules) {
+    if (hasDecimal) {
+        content += `import { Big } from 'big.js';
+`;
+    }
+
+
+    if (conf.get('rules')) {
         content += `import * as joi from 'joi';
 `;
     }
 
-    if (hasDate) {
+    if (conf.get('moment') && hasDate) {
         content += `import { Moment } from 'moment';
 `;
     }
@@ -31,10 +57,39 @@ module.exports = function(table, name, columns, baseInfo, hasDate, rules) {
 `;
 
 
-    if (hasDate) {
-        content += `import { momentTransformer } from 'typeormgen';
-`;
+    content += 'import { GenPartial';
+    if (hasDecimal || hasBool || hasDate) {
+        content += ', ';
+    } else {
+        content += ' ';
     }
+
+    if (hasDecimal) {
+        content += 'bigTransformer';
+
+        if (hasBool || hasDate) {
+            content += ', ';
+        } else {
+            content += ' ';
+        }
+    }
+
+    if (hasBool) {
+        content += 'booleanTransformer';
+
+        if (hasDate) {
+            content += ', ';
+        } else {
+            content += ' ';
+        }
+    }
+
+    if (hasDate) {
+        content += `momentTransformer `;
+    }
+
+    content += `} from 'typeormgen';
+`;
 
     if (baseInfo) {
         content += `
@@ -43,8 +98,8 @@ import ${baseInfo.name} from '${baseInfo.path}';
     }
 
     content += `
-@Entity('${table}')
-export default class ${name} `;
+@Entity('${conf.get('table')}')
+export default class ${conf.get('model')} `;
 
     if (baseInfo) {
         content += `extends ${baseInfo.name} `;
@@ -54,4 +109,4 @@ export default class ${name} `;
 `;
 
     return content;
-}
+};
