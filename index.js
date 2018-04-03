@@ -24,9 +24,13 @@ const booleanTransformer = {
         return value;
     },
     to: function(value) {
-        if (value) {
-            return value ? 1 : 0;
+        if (value === true) {
+            return 1;
+        } else if (value === false) {
+            return 0;
         }
+
+        return value;
     }
 };
 
