@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const { boolTypes, numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
+const writeAssign = require('./write-assign');
 const writeFoot = require('./write-foot');
 const writeHead = require('./write-head');
 const writeRules = require('./write-rules');
@@ -45,6 +46,7 @@ module.exports = function(info, nconf) {
         content += writeTojson(info, tab);
     }
 
+    content += writeAssign(info, tab, nconf);
     content += writeFoot(info, tab, nconf);
 
     return fs.outputFileSync(out, content);
