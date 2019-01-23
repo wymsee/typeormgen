@@ -1,6 +1,6 @@
 {
   "name": "typeormgen",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "Generate typeorm models from your database tables",
   "main": "index.js",
   "types": "index.d.ts",
@@ -22,12 +22,12 @@
   },
   "homepage": "https://github.com/wymsee/typeormgen#readme",
   "dependencies": {
-    "big.js": "^5.0.3",
+    "big.js": "^5.2.2",
     "dotenv": "^5.0.1",
     "fs-extra": "^5.0.0",
-    "knex": "^0.14.4",
-    "moment": "^2.21.0",
-    "mysql": "^2.15.0",
+    "knex": "^0.14.6",
+    "moment": "^2.24.0",
+    "mysql": "^2.16.0",
     "nconf": "^0.10.0"
   }
 }
