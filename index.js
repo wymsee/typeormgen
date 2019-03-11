@@ -51,8 +51,26 @@ const momentTransformer = {
     }
 };
 
+const timeTransformer = {
+    // called on value when fetching from database
+    from: function(value) {
+        if (value) {
+            return moment.utc(value).format('HH:mm:ss');
+        }
+        return value;
+    },
+    // called on value before persisting to database
+    to: function (value) {
+        if (moment.isMoment(value)) {
+            return value.utc().format('HH:mm:ss').toString();
+        }
+        return value;
+    }
+};
+
 module.exports = {
     bigTransformer,
     booleanTransformer,
-    momentTransformer
+    momentTransformer,
+    timeTransformer
 };
