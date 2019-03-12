@@ -55,29 +55,25 @@ const momentTransformer = {
 const timeTransformer = {
     // called on value when fetching from database
     from: function (value) {
-        if (value) {
-            let retVal;
+        if (value && !moment.isMoment(value)) {
             if (value.match(timeRegex)) {
-                retVal = moment(value, 'HH:mm:ss');
+                return moment(value, 'HH:mm:ss');
             } else {
-                retVal = moment(value);
+                return moment(value);
             }
-            return retVal;
         }
         return value;
     },
     // called on value before persisting to database
     to: function (value) {
-        if (value) {
-            let retVal;
+        if (value && !moment.isMoment(value)) {
             if (value.match(timeRegex)) {
-                retVal = moment(value, 'HH:mm:ss').format('HH:mm:ss');
+                return moment(value, 'HH:mm:ss').format('HH:mm:ss');
             } else {
-                retVal = moment(value).format('HH:mm:ss');
+                return moment(value).format('HH:mm:ss');
             }
-            return retVal;
         }
-        return value;
+        return value.format('HH:mm:ss');
     }
 };
 
