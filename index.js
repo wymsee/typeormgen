@@ -1,5 +1,6 @@
 const Big = require('big.js');
 const moment = require('moment');
+const timeRegex = /^([0-1]\d|2[0-3]):([0-5]\d):([0-5]\d)$/g;
 
 const bigTransformer = {
     from: function(value) {
@@ -51,8 +52,34 @@ const momentTransformer = {
     }
 };
 
+const timeTransformer = {
+    // called on value when fetching from database
+    from: function (value) {
+        if (value && !moment.isMoment(value)) {
+            if (value.match(timeRegex)) {
+                return moment(value, 'HH:mm:ss');
+            } else {
+                return moment(value);
+            }
+        }
+        return value;
+    },
+    // called on value before persisting to database
+    to: function (value) {
+        if (value && !moment.isMoment(value)) {
+            if (value.match(timeRegex)) {
+                return moment(value, 'HH:mm:ss').format('HH:mm:ss');
+            } else {
+                return moment(value).format('HH:mm:ss');
+            }
+        }
+        return value.format('HH:mm:ss');
+    }
+};
+
 module.exports = {
     bigTransformer,
     booleanTransformer,
-    momentTransformer
+    momentTransformer,
+    timeTransformer
 };
