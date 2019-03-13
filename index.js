@@ -66,17 +66,17 @@ const timeTransformer = {
     },
     // called on value before persisting to database
     to: function (value) {
-        if (!value) {
-            return value;
-        }
-        if (value && !moment.isMoment(value)) {
-            if (value.match(timeRegex)) {
-                return moment(value, 'HH:mm:ss').format('HH:mm:ss');
-            } else {
-                return moment(value).format('HH:mm:ss');
+        if (value) {
+            if (!moment.isMoment(value)){
+                if (value.match(timeRegex)) {
+                    return moment(value, 'HH:mm:ss').format('HH:mm:ss');
+                } else {
+                    return moment(value).format('HH:mm:ss');
+                }    
             }
+            return value.format('HH:mm:ss');
         }
-        return value.format('HH:mm:ss');
+        return value;
     }
 };
 
