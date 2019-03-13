@@ -33,8 +33,15 @@ interface MomentTransformer {
     to: (value: Moment) => string;
 }
 
+interface TimeTransformer {
+    from: (value: Moment | Date | string) => Moment;
+    to: (value: Moment) => string;
+}
+
 declare const bigTransformer: BigTransformer;
 
 declare const booleanTransformer: BooleanTransformer;
 
 declare const momentTransformer: MomentTransformer;
+
+declare const timeTransformer: TimeTransformer;
