@@ -2,8 +2,16 @@ const { boolTypes, dateTypes } = require('./constants');
 
 module.exports = function(info, tab, conf) {
     let content = `${tab}assign(props?: GenPartial<${conf.get('model')}>) {
-${tab}${tab}super.assign(props);
 `;
+    if (conf.get('base')) {
+        content += `${tab}${tab}super.assign(props);
+`;
+    } else {
+        content += `${tab}${tab}if (props) {
+${tab}${tab}${tab}Object.assign(this, props.toJSON ? props.toJSON() : props);
+${tab}${tab}}
+`;
+    }
 
     let transformers = '';
     Object.keys(info).forEach(name => {
@@ -41,7 +49,7 @@ ${transformers}${tab.repeat(2)}}
     }
 
     content += `${tab}}
-    
+
 `;
 
     return content;

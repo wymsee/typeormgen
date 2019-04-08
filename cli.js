@@ -13,6 +13,14 @@ nconf.argv(yargs.options({
         alias: 'b',
         describe: 'Path to a file containing a class for the model to exend.  The class should be the default export'
     },
+    client: {
+        alias: 'c',
+        describe: 'The database client: mysql or sqlite3'
+    },
+    filename: {
+        alias: 'f',
+        describe: 'Path to a sqlite database file'
+    },
     host: {
         alias: 'h',
         describe: 'Database host url'
@@ -105,7 +113,7 @@ nconf.argv(yargs.options({
 if (nconf.get('envFile')) {
     dotenv.config({ path: nconf.get('envFile') });
 } else {
-    dotenv.config({ path: path.resolve(__dirname, '..', '..', '.env') });
+    dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 }
 
 nconf.env({
@@ -137,12 +145,13 @@ if (configFile) {
 } else {
     nconf.file({
         file: 'typeormgen.json',
-        dir: __dirname,
+        dir: process.cwd(),
         search: true
     });
 }
 
 nconf.defaults({
+    client: 'mysql',
     tabSize: 4
 });
 
@@ -157,9 +166,11 @@ if (!nconf.get('model')) {
     nconf.set('model', model);
 }
 
+const client = nconf.get('client');
 const knex = Knex({
-    client: 'mysql',
+    client,
     connection: {
+        filename: nconf.get('filename'),
         host: nconf.get('host'),
         port: nconf.get('port'),
         user: nconf.get('user'),
@@ -168,24 +179,48 @@ const knex = Knex({
     }
 });
 
-knex.raw(`DESCRIBE ${nconf.get('table')}`).then(([rows]) => {
-    const info = {};
-    rows.forEach(row => {
-        const openIndex = row.Type.indexOf('(');
-        info[row.Field] = {
-            type: openIndex > -1 ? row.Type.slice(0, openIndex - row.Type.length): row.Type,
-            length: parseInt(row.Type.slice(openIndex + 1, -1), 10),
-            nullable: row.Null === 'YES'
-        };
-        if (info[row.Field].type === 'decimal') {
-            info[row.Field].length += 1;
+if (client === 'mysql') {
+    knex.raw(`DESCRIBE ${nconf.get('table')}`).then(([rows]) => {
+        const info = {};
+        rows.forEach(row => {
+            const openIndex = row.Type.indexOf('(');
+            info[row.Field] = {
+                type: openIndex > -1 ? row.Type.slice(0, openIndex - row.Type.length): row.Type,
+                length: parseInt(row.Type.slice(openIndex + 1, -1), 10),
+                nullable: row.Null === 'YES'
+            };
+            if (info[row.Field].type === 'decimal') {
+                info[row.Field].length += 1;
+            }
+        });
+        try {
+            writeModel(info, nconf);
+        } catch (err) {
+            console.error(err);
+            process.exit(1);
         }
+        process.exit();
     });
-    try {
-        writeModel(info, nconf);
-    } catch (err) {
-        console.error(err);
-        process.exit(1);
-    }
-    process.exit();
-});
+} else {
+    knex(nconf.get('table')).columnInfo().then(columns => {
+        const info = {};
+        Object.keys(columns).forEach(name => {
+            const column = columns[name];
+            info[name] = {
+                type: column.type,
+                length: parseInt(column.maxLength, 10),
+                nullable: column.nullable
+            };
+            if (info[name].type === 'decimal') {
+                info[name].length += 1;
+            }
+        });
+        try {
+            writeModel(info, nconf);
+        } catch (err) {
+            console.error(err);
+            process.exit(1);
+        }
+        process.exit();
+    });
+}
