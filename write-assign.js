@@ -8,8 +8,15 @@ module.exports = function(info, tab, conf) {
 `;
     } else {
         content += `${tab}${tab}if (props) {
-${tab}${tab}${tab}Object.assign(this, props.toJSON ? props.toJSON() : props);
-${tab}${tab}}
+`;
+        if (conf.get('toJSON')) {
+            content += `${tab}${tab}${tab}Object.assign(this, props.toJSON ? props.toJSON() : props);
+`;
+        } else {
+            content += `${tab}${tab}${tab}Object.assign(this, props);
+`;
+        }
+        content += `${tab}${tab}}
 `;
     }
 
