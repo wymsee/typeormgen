@@ -88,7 +88,7 @@ module.exports = function(info, columns, baseInfo, conf) {
         content += `momentTransformer `;
     }
 
-    content += `} from 'typeormgen';
+    content += `} from '@synconset/typeormutils';
 `;
 
     if (baseInfo) {
