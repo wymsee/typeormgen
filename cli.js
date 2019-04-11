@@ -21,6 +21,10 @@ nconf.argv(yargs.options({
         alias: 'c',
         describe: 'The database client: mysql or sqlite3'
     },
+    default: {
+        boolean: true,
+        describe: 'export the entity class as the default export'
+    },
     filename: {
         alias: 'f',
         describe: 'Path to a sqlite database file'
