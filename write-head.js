@@ -53,8 +53,13 @@ module.exports = function(info, columns, baseInfo, conf) {
     if (columns.version) {
         content += ', VersionColumn';
     }
-    content += ` } from 'typeorm';
+    if (conf.get('browser')) {
+        content += ` } from 'typeorm/browser';
 `;
+    } else {
+        content += ` } from 'typeorm';
+`;
+    }
 
 
     content += 'import { GenPartial';

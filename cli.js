@@ -13,6 +13,10 @@ nconf.argv(yargs.options({
         alias: 'b',
         describe: 'Path to a file containing a class for the model to exend.  The class should be the default export'
     },
+    browser: {
+        boolean: true,
+        describe: 'import from typeorm/browser instead of typeorm'
+    },
     client: {
         alias: 'c',
         describe: 'The database client: mysql or sqlite3'
