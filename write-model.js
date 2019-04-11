@@ -80,7 +80,7 @@ function writeColumn(col, info, tab, columns, conf) {
     } else if (columns.primaryGeneratedUUID === col) {
         decorator = `@PrimaryGeneratedColumn`;
         options = `'uuid'`;
-    } else if (columns.primaryColumn === col) {
+    } else if (columns.primary === col) {
         decorator = '@PrimaryColumn';
     } else if (columns.createDate === col) {
         decorator = '@CreateDateColumn';
