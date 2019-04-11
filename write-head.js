@@ -104,7 +104,7 @@ import ${baseInfo.name} from '${baseInfo.path}';
 
     content += `
 @Entity('${conf.get('table')}')
-export${conf.get(' default ') ? 'default' : '  '}class ${conf.get('model')} `;
+export${conf.get(' default ') ? 'default' : ' '}class ${conf.get('model')} `;
 
     if (baseInfo) {
         content += `extends ${baseInfo.name} `;
