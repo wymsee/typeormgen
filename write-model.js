@@ -42,12 +42,27 @@ module.exports = function(info, nconf) {
         content += writeRules(info, tab);
     }
 
+    // Write constructor
+    content += `${tab}constructor(props?: GenPartial<${conf.get('model')}>) {
+`;
+    if (conf.get('base')) {
+        content += `${tab}${tab}super(props);
+`;
+    } else {
+        content += `${tab}${tab}this.assign(props);
+`;
+    }
+    content += `${tab}}
+
+`;
+
     if (nconf.get('toJSON')) {
         content += writeTojson(info, tab);
     }
 
     content += writeAssign(info, tab, nconf);
-    content += writeFoot(info, tab, nconf);
+
+    content += '}';
 
     return fs.outputFileSync(out, content);
 };
@@ -68,9 +83,15 @@ function writeColumn(col, info, tab, columns, conf) {
         } else {
             type = 'Date';
         }
-    } else if (conf.get('big') && info.type === 'decimal') {
-        type = 'Big';
-        options = `{ type: '${info.type}', transformer: bigTransformer }`;
+    } else if (info.type.indexOf('decimal') >= -1) {
+        if (conf.get('big')) {
+            type = 'Big';
+            options = `{ type: '${info.type}', transformer: bigTransformer }`;
+        } else {
+            const [, precision, scale] = /((\d+)\,(\d+)\)/.exec(info.type);
+            type = 'number';
+            options = `{ type: 'decimal', precision: ${precision}, scale: ${scale} }`;
+        }
     }
 
     let decorator = '@Column';
