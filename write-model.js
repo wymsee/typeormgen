@@ -2,7 +2,6 @@ const fs = require('fs-extra');
 const { boolTypes, numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
 const writeAssign = require('./write-assign');
-const writeFoot = require('./write-foot');
 const writeHead = require('./write-head');
 const writeRules = require('./write-rules');
 const writeTojson = require('./write-tojson');
@@ -43,9 +42,9 @@ module.exports = function(info, nconf) {
     }
 
     // Write constructor
-    content += `${tab}constructor(props?: GenPartial<${conf.get('model')}>) {
+    content += `${tab}constructor(props?: GenPartial<${nconf.get('model')}>) {
 `;
-    if (conf.get('base')) {
+    if (nconf.get('base')) {
         content += `${tab}${tab}super(props);
 `;
     } else {
@@ -83,14 +82,16 @@ function writeColumn(col, info, tab, columns, conf) {
         } else {
             type = 'Date';
         }
-    } else if (info.type.indexOf('decimal') >= -1) {
+    } else if (info.type.indexOf('decimal') > -1) {
         if (conf.get('big')) {
             type = 'Big';
             options = `{ type: '${info.type}', transformer: bigTransformer }`;
         } else {
-            const [, precision, scale] = /((\d+)\,(\d+)\)/.exec(info.type);
             type = 'number';
-            options = `{ type: 'decimal', precision: ${precision}, scale: ${scale} }`;
+            const results = /\((\d+)\,(\d+)\)/.exec(info.type);
+            if (results) {
+                options = `{ type: 'decimal', precision: ${results[1]}, scale: ${results[2]} }`;
+            }
         }
     }
 
