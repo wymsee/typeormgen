@@ -1,6 +1,6 @@
 {
   "name": "@synconset/typeormgen",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "Generate typeorm models from your database tables",
   "bin": {
     "typeormgen": "cli.js",
