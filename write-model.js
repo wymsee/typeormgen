@@ -2,7 +2,6 @@ const fs = require('fs-extra');
 const { boolTypes, numberTypes, dateTypes } = require('./constants');
 const readBase = require('./read-base');
 const writeAssign = require('./write-assign');
-const writeFoot = require('./write-foot');
 const writeHead = require('./write-head');
 const writeRules = require('./write-rules');
 const writeTojson = require('./write-tojson');
@@ -42,12 +41,27 @@ module.exports = function(info, nconf) {
         content += writeRules(info, tab);
     }
 
+    // Write constructor
+    content += `${tab}constructor(props?: GenPartial<${nconf.get('model')}>) {
+`;
+    if (nconf.get('base')) {
+        content += `${tab}${tab}super(props);
+`;
+    } else {
+        content += `${tab}${tab}this.assign(props);
+`;
+    }
+    content += `${tab}}
+
+`;
+
     if (nconf.get('toJSON')) {
         content += writeTojson(info, tab);
     }
 
     content += writeAssign(info, tab, nconf);
-    content += writeFoot(info, tab, nconf);
+
+    content += '}';
 
     return fs.outputFileSync(out, content);
 };
@@ -68,9 +82,17 @@ function writeColumn(col, info, tab, columns, conf) {
         } else {
             type = 'Date';
         }
-    } else if (conf.get('big') && info.type === 'decimal') {
-        type = 'Big';
-        options = `{ type: '${info.type}', transformer: bigTransformer }`;
+    } else if (info.type.indexOf('decimal') > -1) {
+        if (conf.get('big')) {
+            type = 'Big';
+            options = `{ type: '${info.type}', transformer: bigTransformer }`;
+        } else {
+            type = 'number';
+            const results = /\((\d+)\,(\d+)\)/.exec(info.type);
+            if (results) {
+                options = `{ type: 'decimal', precision: ${results[1]}, scale: ${results[2]} }`;
+            }
+        }
     }
 
     let decorator = '@Column';

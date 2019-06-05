@@ -1,4 +1,7 @@
 .zedstate
+typeormgen.json
+typeormgen-mysql.json
+typeormgen-sqlite.json
 # Logs
 logs
 *.log

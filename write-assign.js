@@ -56,7 +56,6 @@ ${transformers}${tab.repeat(2)}}
     }
 
     content += `${tab}}
-
 `;
 
     return content;

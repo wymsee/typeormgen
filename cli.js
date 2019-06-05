@@ -5,8 +5,8 @@ const Knex = require('knex');
 const nconf = require('nconf');
 const path = require('path');
 const yargs = require('yargs');
-const { pluralizationString } = require('./constants');
 const writeModel = require('./write-model');
+const pluralize = require('pluralize');
 
 nconf.argv(yargs.options({
     base: {
@@ -43,6 +43,11 @@ nconf.argv(yargs.options({
     },
     password: {
         describe: 'Database password'
+    },
+    pluralization: {
+        describe: 'Whether to use plural or singular model names',
+        boolean: true,
+        default: false
     },
     configFile: {
         describe: 'Path to json config file'
@@ -168,8 +173,8 @@ if (!nconf.get('model')) {
     let model = table.toLowerCase()
         .replace(/\_\w/g, sub => sub[1].toUpperCase());
     model = model[0].toUpperCase() + model.slice(1);
-    if (!nconf.get('pluralization') && model.slice(-1) === pluralizationString) {
-        model = model.slice(0, -1);
+    if (!nconf.get('pluralization')) {
+        model = pluralize(model, 1);
     }
     nconf.set('model', model);
 }
