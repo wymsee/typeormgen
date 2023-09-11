@@ -1,6 +1,6 @@
 {
   "name": "@synconset/typeormgen",
-  "version": "2.1.2",
+  "version": "2.1.3",
   "description": "Generate typeorm models from your database tables",
   "bin": {
     "typeormgen": "cli.js",
@@ -25,7 +25,6 @@
     "knex": "^0.19.5",
     "mysql": "2.16.0",
     "nconf": "^0.10.0",
-    "npm": "^7.24.2",
     "pluralize": "^8.0.0",
     "sqlite3": "^5.1.6"
   }
